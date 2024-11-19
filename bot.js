@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const TelegramBot = require("node-telegram-bot-api");
-const explainCommand = require("./commands"); // Git command logic
+const explainCommand = require("./commands"); 
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
