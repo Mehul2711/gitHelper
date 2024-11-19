@@ -5,26 +5,26 @@ import { FaRobot, FaUser } from "react-icons/fa";
 export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false); // Track typing status
+  const [isTyping, setIsTyping] = useState(false); 
   const [typingMessage, setTypingMessage] = useState("");
 
-  const messagesEndRef = useRef(null); // Reference to scroll to the latest message
+  const messagesEndRef = useRef(null); 
 
-  // Function to scroll down to the latest message
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    scrollToBottom(); // Scroll when new messages are added
+    scrollToBottom(); 
   }, [messages]);
 
   const handleSend = async () => {
     if (input.trim()) {
       const userMessage = { sender: "user", text: input };
       setMessages([...messages, userMessage]);
-      setInput(""); // Clear input field
-      setIsTyping(true); // Set typing to true while bot is "thinking"
+      setInput(""); 
+      setIsTyping(true); 
 
       try {
         const res = await fetch(
@@ -32,13 +32,13 @@ export default function Home() {
         );
         if (res.ok) {
           const data = await res.json();
-          simulateTypingByWords(data.message); // Simulate typing with word-by-word typing
+          simulateTypingByWords(data.message); 
         } else {
           setMessages((prevMessages) => [
             ...prevMessages,
             { sender: "bot", text: "Error: Could not fetch response" },
           ]);
-          setIsTyping(false); // Stop typing on error
+          setIsTyping(false);
         }
       } catch (error) {
         console.error("API Request Failed: ", error);
@@ -46,41 +46,41 @@ export default function Home() {
           ...prevMessages,
           { sender: "bot", text: "API Request Failed" },
         ]);
-        setIsTyping(false); // Stop typing on error
+        setIsTyping(false); 
       }
     }
   };
 
-  // Simulate typing word by word to prevent rendering issues
+  
   const simulateTypingByWords = (message) => {
     const words = message.split(" ");
-    setTypingMessage(""); // Start with an empty message
+    setTypingMessage(""); 
     let index = 0;
 
     const typingInterval = setInterval(() => {
       if (index < words.length) {
-        setTypingMessage((prev) => prev + " " + words[index]); // Add one word at a time
-        scrollToBottom(); // Scroll down while typing
+        setTypingMessage((prev) => prev + " " + words[index]);
+        scrollToBottom(); 
         index++;
       } else {
         clearInterval(typingInterval);
-        const botMessage = { sender: "bot", text: formatMessage(message) }; // Formatting the message
+        const botMessage = { sender: "bot", text: formatMessage(message) }; 
         setMessages((prevMessages) => [...prevMessages, botMessage]);
-        setIsTyping(false); // Stop typing when message is complete
+        setIsTyping(false); 
       }
-    }, 300); // Adjust speed for typing (300ms per word)
+    }, 300); 
   };
 
-  // Function to format the message with steps in bullet points
+  
   const formatMessage = (message) => {
-    // Basic logic to simulate formatting for steps, you can expand this based on specific patterns
-    return message.replace(/step\s\d+:/gi, (match) => `\n• ${match.trim()}`); // Example formatting for "Step"
+    
+    return message.replace(/step\s\d+:/gi, (match) => `\n• ${match.trim()}`); 
   };
 
-  // Clear chat messages
+ 
   const handleClear = () => {
-    setMessages([]); // Clear all messages
-    setTypingMessage(""); // Clear typing message
+    setMessages([]); 
+    setTypingMessage(""); 
   };
 
   return (
@@ -103,11 +103,11 @@ export default function Home() {
               {message.sender === "bot" && (
                 <FaRobot className="mr-2 flex-shrink-0 text-3xl text-green-400" />
               )}{" "}
-              {/* Bot icon */}
+           
               {message.sender === "user" && (
                 <FaUser className="mr-2 text-xl text-blue-300" />
               )}{" "}
-              {/* User icon */}
+             
               <div className="break-words whitespace-pre-line">
                 <strong>{message.sender === "user" ? "You" : "Bot"}:</strong>{" "}
                 {message.text}
@@ -135,7 +135,7 @@ export default function Home() {
           <button
             className="ml-3 p-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={handleSend}
-            disabled={isTyping} // Disable the button while the bot is typing
+            disabled={isTyping} 
           >
             Send
           </button>
@@ -143,7 +143,7 @@ export default function Home() {
           <button
             className="ml-2 p-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
             onClick={handleClear}
-            disabled={isTyping} // Disable the button while the bot is typing
+            disabled={isTyping} 
           >
             Clear
           </button>
